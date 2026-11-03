@@ -15,7 +15,7 @@
         region: us-east-1
         security_group:
         - roboshop-common
-        - "roboshop-s{{ item}}"
+        - "roboshop-{{ item}}"
       loop: "{{ instances }}"
       when: action == "create"
        
