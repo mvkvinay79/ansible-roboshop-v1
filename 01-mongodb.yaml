@@ -20,7 +20,7 @@
         state: started
         enabled: yes
     - name: allow remote connections to mongodb
-      repalce:
+      replace:
         path: /etc/mongod.conf
         regexp: '127.0.0.1'
         replace: '0.0.0.0'
