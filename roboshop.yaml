@@ -35,6 +35,7 @@
         overwrite: true
       loop: "{{ ec2_output.results }}"
       when: action == "create"
+
     - name: delete R53 records
       amazon.aws.route53:
         state: absent
@@ -44,6 +45,7 @@
         ttl: 1
       loop: "{{ instances }}"
       when: action == "delete"
+      
     - name: instance deletion
       amazon.aws.ec2_instance:
         state: absent
