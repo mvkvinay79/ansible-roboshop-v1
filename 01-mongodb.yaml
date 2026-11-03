@@ -7,6 +7,16 @@
         src: mongo.repo
         dest: /etc/yum.repos.d/mongo.repo
 
-    - name: test the inventory varibal
-      debug:
-        msg:  "{{ app_name }}"
+    # - name: test the inventory varibal
+    #   debug:
+    #     msg:  "{{ app_name }}"
+    - name: install mongodh server
+      package:
+        name: mongodb-org
+        state: present
+    - name: start and enable mongodb
+      service:
+        name: mongodb
+        starte: started
+        enebled: yes
+
