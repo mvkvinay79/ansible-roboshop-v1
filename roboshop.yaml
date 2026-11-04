@@ -2,6 +2,7 @@
   hosts: local
   connection: local
   vars:
+    # ansible-playbook roboshop.yaml -e "instances={'mongodb', 'redis'}"
     instances: ["mongodb", "redis", "mysql", "rabbitmq"]
     action: create
     domain_name: vinaydevops.store
