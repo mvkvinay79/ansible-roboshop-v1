@@ -3,6 +3,7 @@
   connection: local
   vars:
     # ansible-playbook roboshop.yaml -e "instances={'mongodb', 'redis'}"
+    # ansible-playbook roboshop.yaml -e "action=delete"
     instances: ["mongodb", "redis", "mysql", "rabbitmq"]
     action: create
     domain_name: vinaydevops.store
