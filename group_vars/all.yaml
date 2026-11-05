@@ -10,3 +10,5 @@ cart_host: cart.vinaydevops.store
 shipping_host: shipping.vinaydevops.store
 payment_host: payment.vinaydevops.store
 mysql_root_password: RoboShop@1
+shipping_db_user: shipping
+shipping_db_password: RoboShop@1
