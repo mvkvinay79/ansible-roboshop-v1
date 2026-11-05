@@ -25,7 +25,7 @@
     copy:
       content: "export JAVA_HOME={{ java25.stdout | dirname | dirname }}"
       dest: /etc/profile.d/java.sh
-    - name: create roboshop system user
+  - name: create roboshop system user
     user:
       name: roboshop
       create_home: false
