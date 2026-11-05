@@ -88,6 +88,7 @@
   - name: check cities data exit or not
     command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
     register: cities_count
+    ignore_errors: true
 
   - name: print cities_count
     debug:
@@ -98,6 +99,7 @@
     when: cities_count.rc != 0 or cities_count.stdout | int == 0
     tags:
     - mysql
+
   - name: create app user in mysql
     shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/app-user.sql
     tags:
