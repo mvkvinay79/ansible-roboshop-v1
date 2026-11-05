@@ -4,27 +4,32 @@
   tasks:
   - name: enable maven 3.9
     command: dnf module enable maven:3.9 -y
-  
-  - name: install maven and java 35
+
+  - name: install maven and java25
     dnf:
       name:
       - maven
       - java-25-openjdk-devel
-      state: present 
-  - name: find java25 path
-    shell: readlink -f $(ls /usr/lib/jvm/java-25-openjdk*/bin/java | head -1)
-    register: java25
+      - maven-openjdk25 # installing this so that we no need to set JAVA_HOME again
+      - mysql
+      state: present
 
-  - name: print the output
-    debug:
-      msg: "{{ java25 }}"
-  - name: make java 25 as defualt
-    command: alternative --set java {{ java25.stdout }}
-  
-  - name: set JAVA_HOME
-    copy:
-      content: "export JAVA_HOME={{ java25.stdout | dirname | dirname }}"
-      dest: /etc/profile.d/java.sh
+  # - name: find java25 path
+  #   shell: readlink -f $(ls /usr/lib/jvm/java-25-openjdk*/bin/java | head -1)
+  #   register: java25
+
+  # - name: print the output
+  #   debug:
+  #     msg: "{{ java25 }}"
+
+  # - name: make java25 as default
+  #   command: alternatives --set java {{ java25.stdout }}
+
+  # - name: set JAVA_HOME
+  #   copy:
+  #     content: "export JAVA_HOME={{ java25.stdout | dirname | dirname  }}"
+  #     dest: /etc/profile.d/java.sh
+
   - name: create roboshop system user
     user:
       name: roboshop
@@ -60,11 +65,10 @@
       dest: /app
       remote_src: yes
 
-  - name: install dependencies
-    command: mvn clean package
+  - name: mvn version without JAVA_HOME
+    command: mvn --version
     args:
       chdir: /app
-
 
 
 
