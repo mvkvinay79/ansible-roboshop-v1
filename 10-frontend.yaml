@@ -13,7 +13,7 @@
       enabled: yes
 
   - name: find all contents inside the directory
-    ansible.buitin.find:
+    ansible.builtin.find:
       paths: /usr/share/nginx/html/
       recurse: true
       hidden: true
@@ -23,7 +23,7 @@
   - name: print direcory content
     debug:
       msg: "{{ directory_contents }}"
-      
+
   - name: delete the discovered contents
     ansible.builtin.file:
       path: "{{ item.path }}"
