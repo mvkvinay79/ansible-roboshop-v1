@@ -28,13 +28,13 @@
     ansible.builtin.file:
       path: "{{ item.path }}"
       state: absent
-    loop: "{{ directory_conents.files }}"
+    loop: "{{ directory_contents.files }}"
 
   - name: download frontend application
     get_url:
       url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
       dest: /tmp/frontend.zip
-      
+
   - name: unzip frontend
     unarchive:
       src: /tmp/frontend.zip
