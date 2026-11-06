@@ -1,0 +1,32 @@
+- name: configure frontend server
+  hosts: frontend
+  become: yes
+  tasks: 
+  - name: install nginx
+    dnf:
+      name: nginx
+      state: present
+  - name: start and enable nginx
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: find all contents inside the directory
+    ansible.buitin.find:
+      paths: /usr/share/nginx/html/
+      recurse: true
+      hidden: true
+      file_type: any
+    register: directory_contents
+
+  - name: print direcory content
+    debug:
+      msg: "{{ directory_contents }}"
+      
+  - name: delete the discovered contents
+    ansible.builtin.file:
+      path: "{{ item.path }}"
+      state: absent
+    loop: "{{ directory_conents.files }}"
+  
