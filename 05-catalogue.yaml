@@ -1,17 +1,18 @@
-- name: configure catalouge server
+- name: configure catalogue server
   hosts: catalogue
   become: yes
   tasks:
-  - name: disable defaulut node js
+  - name: disable default nodejs
     command: dnf module disable nodejs -y
-  
+
   - name: enable nodejs24
     command: dnf module enable nodejs:24 -y
-  
+
   - name: install nodejs
     dnf:
       name: nodejs
       state: present
+
   - name: create roboshop system user
     user:
       name: roboshop
@@ -19,8 +20,8 @@
       home: /app
       system: true
       shell: /sbin/nologin
-      comment: robohop system user
-      state: present
+      comment: "roboshop system user"
+
   - name: remove existing app directory
     file:
       path: /app
@@ -36,12 +37,12 @@
       path: /app
       state: directory
 
-  - name: download catalogue app
+  - name: download catalogue application
     get_url:
       url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/catalogue-v4.zip
       dest: /tmp/catalogue.zip
 
-  - name: unzlip catalogue app
+  - name: unzip catalogue
     unarchive:
       src: /tmp/catalogue.zip
       dest: /app
@@ -50,7 +51,7 @@
   - name: install dependencies
     community.general.npm:
       path: /app
-
+  
   - name: copy catalogue service
     template:
       src: catalogue.service.j2
@@ -65,26 +66,25 @@
     dnf:
       name: mongodb-mongosh
       state: present
+
   - name: check products loaded or not
-    command: mongosh --host {{ mongodb_host }} --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()'
+    command: mongosh --host "{{ mongodb_host }}" --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()'
     register: product_count
-  
-  - name: print product count
+
+  - name: print product_count
     debug:
       msg: "{{ product_count }}"
-  
-  - name: load products
-    shell: mongosh --host {{ mongodb_host }} </app/db/master-data.js
+
+  - name: load the products
+    shell: mongosh --host "{{ mongodb_host }}" < /app/db/master-data.js
     when: product_count.stdout | int == 0
-  
-  - name: daemon repload
+
+  - name: daemon reload
     systemd_service:
-      daemon_reload: yes
-  
-  - name: start enable cataloug
+      daemon_reload: true
+
+  - name: start and enable catalogue
     service:
       name: catalogue
       state: restarted
       enabled: yes
-
-
