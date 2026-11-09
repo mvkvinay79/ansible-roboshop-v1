@@ -88,34 +88,27 @@
      chdir: /app
 
   - name: check cities data exist or not
-    shell: mysql -h "{{ mysql_host }}" -u root -N -B -e "SELECT COUNT(*) FROM cities.cities;"
-    environment:
-      MYSQL_PWD: "{{ mysql_root_password }}"
+    command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
     register: cities_count
-    failed_when: false
-    changed_when: false
+    ignore_errors: true
     tags:
-      - mysql
-
-- name: print cities_count
-  debug:
-    msg: "{{ cities_count.stdout }}"
-  tags:
     - mysql
 
-- name: load cities data into mysql
-  shell: mysql -h "{{ mysql_host }}" -u root < /app/db/master-data.sql
-  environment:
-    MYSQL_PWD: "{{ mysql_root_password }}"
-  when: cities_count.rc != 0 or cities_count.stdout | int == 0
-  tags:
+  - name: print cities_count
+    debug:
+      msg: "{{ cities_count }}"
+    tags:
     - mysql
 
-- name: create app user in mysql
-  shell: mysql -h "{{ mysql_host }}" -u root < /app/db/app-user.sql
-  environment:
-    MYSQL_PWD: "{{ mysql_root_password }}"
-  tags:
+  - name: load cities data into mysql
+    shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/master-data.sql
+    when: cities_count.rc != 0 or cities_count.stdout | int == 0
+    tags:
+    - mysql
+
+  - name: create app user in mysql
+    shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/app-user.sql
+    tags:
     - mysql
 
   - name: copy shipping service
